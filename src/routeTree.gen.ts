@@ -14,7 +14,13 @@ import { Route as AuthenticatedRouteImport } from './routes/_authenticated'
 import { Route as ForgotPasswordRouteImport } from './routes/forgot-password'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as RegisterRouteImport } from './routes/register'
+import { Route as AuthenticatedAlertsRouteImport } from './routes/_authenticated.alerts'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated.dashboard'
+import { Route as AuthenticatedDigitalTwinRouteImport } from './routes/_authenticated.digital-twin'
+import { Route as AuthenticatedEmergencyHistoryRouteImport } from './routes/_authenticated.emergency-history'
+import { Route as AuthenticatedLocationRouteImport } from './routes/_authenticated.location'
+import { Route as AuthenticatedMonitoringRouteImport } from './routes/_authenticated.monitoring'
+import { Route as AuthenticatedTrustedContactsRouteImport } from './routes/_authenticated.trusted-contacts'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -40,25 +46,70 @@ const RegisterRoute = RegisterRouteImport.update({
   path: '/register',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuthenticatedAlertsRoute = AuthenticatedAlertsRouteImport.update({
+  id: '/alerts',
+  path: '/alerts',
+  getParentRoute: () => AuthenticatedRoute,
+} as any)
 const AuthenticatedDashboardRoute = AuthenticatedDashboardRouteImport.update({
   id: '/dashboard',
   path: '/dashboard',
   getParentRoute: () => AuthenticatedRoute,
 } as any)
+const AuthenticatedDigitalTwinRoute =
+  AuthenticatedDigitalTwinRouteImport.update({
+    id: '/digital-twin',
+    path: '/digital-twin',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any)
+const AuthenticatedEmergencyHistoryRoute =
+  AuthenticatedEmergencyHistoryRouteImport.update({
+    id: '/emergency-history',
+    path: '/emergency-history',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any)
+const AuthenticatedLocationRoute = AuthenticatedLocationRouteImport.update({
+  id: '/location',
+  path: '/location',
+  getParentRoute: () => AuthenticatedRoute,
+} as any)
+const AuthenticatedMonitoringRoute = AuthenticatedMonitoringRouteImport.update({
+  id: '/monitoring',
+  path: '/monitoring',
+  getParentRoute: () => AuthenticatedRoute,
+} as any)
+const AuthenticatedTrustedContactsRoute =
+  AuthenticatedTrustedContactsRouteImport.update({
+    id: '/trusted-contacts',
+    path: '/trusted-contacts',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/forgot-password': typeof ForgotPasswordRoute
   '/login': typeof LoginRoute
   '/register': typeof RegisterRoute
+  '/alerts': typeof AuthenticatedAlertsRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
+  '/digital-twin': typeof AuthenticatedDigitalTwinRoute
+  '/emergency-history': typeof AuthenticatedEmergencyHistoryRoute
+  '/location': typeof AuthenticatedLocationRoute
+  '/monitoring': typeof AuthenticatedMonitoringRoute
+  '/trusted-contacts': typeof AuthenticatedTrustedContactsRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/forgot-password': typeof ForgotPasswordRoute
   '/login': typeof LoginRoute
   '/register': typeof RegisterRoute
+  '/alerts': typeof AuthenticatedAlertsRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
+  '/digital-twin': typeof AuthenticatedDigitalTwinRoute
+  '/emergency-history': typeof AuthenticatedEmergencyHistoryRoute
+  '/location': typeof AuthenticatedLocationRoute
+  '/monitoring': typeof AuthenticatedMonitoringRoute
+  '/trusted-contacts': typeof AuthenticatedTrustedContactsRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -67,13 +118,41 @@ export interface FileRoutesById {
   '/forgot-password': typeof ForgotPasswordRoute
   '/login': typeof LoginRoute
   '/register': typeof RegisterRoute
+  '/_authenticated/alerts': typeof AuthenticatedAlertsRoute
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
+  '/_authenticated/digital-twin': typeof AuthenticatedDigitalTwinRoute
+  '/_authenticated/emergency-history': typeof AuthenticatedEmergencyHistoryRoute
+  '/_authenticated/location': typeof AuthenticatedLocationRoute
+  '/_authenticated/monitoring': typeof AuthenticatedMonitoringRoute
+  '/_authenticated/trusted-contacts': typeof AuthenticatedTrustedContactsRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/forgot-password' | '/login' | '/register' | '/dashboard'
+  fullPaths:
+    | '/'
+    | '/forgot-password'
+    | '/login'
+    | '/register'
+    | '/alerts'
+    | '/dashboard'
+    | '/digital-twin'
+    | '/emergency-history'
+    | '/location'
+    | '/monitoring'
+    | '/trusted-contacts'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/forgot-password' | '/login' | '/register' | '/dashboard'
+  to:
+    | '/'
+    | '/forgot-password'
+    | '/login'
+    | '/register'
+    | '/alerts'
+    | '/dashboard'
+    | '/digital-twin'
+    | '/emergency-history'
+    | '/location'
+    | '/monitoring'
+    | '/trusted-contacts'
   id:
     | '__root__'
     | '/'
@@ -81,7 +160,13 @@ export interface FileRouteTypes {
     | '/forgot-password'
     | '/login'
     | '/register'
+    | '/_authenticated/alerts'
     | '/_authenticated/dashboard'
+    | '/_authenticated/digital-twin'
+    | '/_authenticated/emergency-history'
+    | '/_authenticated/location'
+    | '/_authenticated/monitoring'
+    | '/_authenticated/trusted-contacts'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -129,6 +214,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof RegisterRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_authenticated/alerts': {
+      id: '/_authenticated/alerts'
+      path: '/alerts'
+      fullPath: '/alerts'
+      preLoaderRoute: typeof AuthenticatedAlertsRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
     '/_authenticated/dashboard': {
       id: '/_authenticated/dashboard'
       path: '/dashboard'
@@ -136,15 +228,62 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedDashboardRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
+    '/_authenticated/digital-twin': {
+      id: '/_authenticated/digital-twin'
+      path: '/digital-twin'
+      fullPath: '/digital-twin'
+      preLoaderRoute: typeof AuthenticatedDigitalTwinRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/emergency-history': {
+      id: '/_authenticated/emergency-history'
+      path: '/emergency-history'
+      fullPath: '/emergency-history'
+      preLoaderRoute: typeof AuthenticatedEmergencyHistoryRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/location': {
+      id: '/_authenticated/location'
+      path: '/location'
+      fullPath: '/location'
+      preLoaderRoute: typeof AuthenticatedLocationRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/monitoring': {
+      id: '/_authenticated/monitoring'
+      path: '/monitoring'
+      fullPath: '/monitoring'
+      preLoaderRoute: typeof AuthenticatedMonitoringRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/trusted-contacts': {
+      id: '/_authenticated/trusted-contacts'
+      path: '/trusted-contacts'
+      fullPath: '/trusted-contacts'
+      preLoaderRoute: typeof AuthenticatedTrustedContactsRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
   }
 }
 
 interface AuthenticatedRouteChildren {
+  AuthenticatedAlertsRoute: typeof AuthenticatedAlertsRoute
   AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
+  AuthenticatedDigitalTwinRoute: typeof AuthenticatedDigitalTwinRoute
+  AuthenticatedEmergencyHistoryRoute: typeof AuthenticatedEmergencyHistoryRoute
+  AuthenticatedLocationRoute: typeof AuthenticatedLocationRoute
+  AuthenticatedMonitoringRoute: typeof AuthenticatedMonitoringRoute
+  AuthenticatedTrustedContactsRoute: typeof AuthenticatedTrustedContactsRoute
 }
 
 const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
+  AuthenticatedAlertsRoute: AuthenticatedAlertsRoute,
   AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
+  AuthenticatedDigitalTwinRoute: AuthenticatedDigitalTwinRoute,
+  AuthenticatedEmergencyHistoryRoute: AuthenticatedEmergencyHistoryRoute,
+  AuthenticatedLocationRoute: AuthenticatedLocationRoute,
+  AuthenticatedMonitoringRoute: AuthenticatedMonitoringRoute,
+  AuthenticatedTrustedContactsRoute: AuthenticatedTrustedContactsRoute,
 }
 
 const AuthenticatedRouteWithChildren = AuthenticatedRoute._addFileChildren(
