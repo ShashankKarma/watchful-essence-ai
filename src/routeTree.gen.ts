@@ -10,33 +10,295 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AuthenticatedRouteImport } from './routes/_authenticated'
+import { Route as ForgotPasswordRouteImport } from './routes/forgot-password'
+import { Route as LoginRouteImport } from './routes/login'
+import { Route as RegisterRouteImport } from './routes/register'
+import { Route as AuthenticatedAlertsRouteImport } from './routes/_authenticated.alerts'
+import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated.dashboard'
+import { Route as AuthenticatedDemoRouteImport } from './routes/_authenticated.demo'
+import { Route as AuthenticatedDigitalTwinRouteImport } from './routes/_authenticated.digital-twin'
+import { Route as AuthenticatedEmergencyHistoryRouteImport } from './routes/_authenticated.emergency-history'
+import { Route as AuthenticatedLocationRouteImport } from './routes/_authenticated.location'
+import { Route as AuthenticatedMonitoringRouteImport } from './routes/_authenticated.monitoring'
+import { Route as AuthenticatedNotificationsRouteImport } from './routes/_authenticated.notifications'
+import { Route as AuthenticatedProfileRouteImport } from './routes/_authenticated.profile'
+import { Route as AuthenticatedSafetyTipsRouteImport } from './routes/_authenticated.safety-tips'
+import { Route as AuthenticatedSettingsRouteImport } from './routes/_authenticated.settings'
+import { Route as AuthenticatedTrustedContactsRouteImport } from './routes/_authenticated.trusted-contacts'
+import { Route as AuthenticatedAdminIndexRouteImport } from './routes/_authenticated.admin.index'
+import { Route as AuthenticatedAdminAnalyticsRouteImport } from './routes/_authenticated.admin.analytics'
+import { Route as AuthenticatedAdminEmergenciesRouteImport } from './routes/_authenticated.admin.emergencies'
+import { Route as AuthenticatedAdminUsersRouteImport } from './routes/_authenticated.admin.users'
+import { Route as AuthenticatedTrustedContactDashboardRouteImport } from './routes/_authenticated.trusted-contact.dashboard'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuthenticatedRoute = AuthenticatedRouteImport.update({
+  id: '/_authenticated',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ForgotPasswordRoute = ForgotPasswordRouteImport.update({
+  id: '/forgot-password',
+  path: '/forgot-password',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LoginRoute = LoginRouteImport.update({
+  id: '/login',
+  path: '/login',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const RegisterRoute = RegisterRouteImport.update({
+  id: '/register',
+  path: '/register',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthenticatedAlertsRoute = AuthenticatedAlertsRouteImport.update({
+  id: '/alerts',
+  path: '/alerts',
+  getParentRoute: () => AuthenticatedRoute,
+} as any)
+const AuthenticatedDashboardRoute = AuthenticatedDashboardRouteImport.update({
+  id: '/dashboard',
+  path: '/dashboard',
+  getParentRoute: () => AuthenticatedRoute,
+} as any)
+const AuthenticatedDemoRoute = AuthenticatedDemoRouteImport.update({
+  id: '/demo',
+  path: '/demo',
+  getParentRoute: () => AuthenticatedRoute,
+} as any)
+const AuthenticatedDigitalTwinRoute =
+  AuthenticatedDigitalTwinRouteImport.update({
+    id: '/digital-twin',
+    path: '/digital-twin',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any)
+const AuthenticatedEmergencyHistoryRoute =
+  AuthenticatedEmergencyHistoryRouteImport.update({
+    id: '/emergency-history',
+    path: '/emergency-history',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any)
+const AuthenticatedLocationRoute = AuthenticatedLocationRouteImport.update({
+  id: '/location',
+  path: '/location',
+  getParentRoute: () => AuthenticatedRoute,
+} as any)
+const AuthenticatedMonitoringRoute = AuthenticatedMonitoringRouteImport.update({
+  id: '/monitoring',
+  path: '/monitoring',
+  getParentRoute: () => AuthenticatedRoute,
+} as any)
+const AuthenticatedNotificationsRoute =
+  AuthenticatedNotificationsRouteImport.update({
+    id: '/notifications',
+    path: '/notifications',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any)
+const AuthenticatedProfileRoute = AuthenticatedProfileRouteImport.update({
+  id: '/profile',
+  path: '/profile',
+  getParentRoute: () => AuthenticatedRoute,
+} as any)
+const AuthenticatedSafetyTipsRoute = AuthenticatedSafetyTipsRouteImport.update({
+  id: '/safety-tips',
+  path: '/safety-tips',
+  getParentRoute: () => AuthenticatedRoute,
+} as any)
+const AuthenticatedSettingsRoute = AuthenticatedSettingsRouteImport.update({
+  id: '/settings',
+  path: '/settings',
+  getParentRoute: () => AuthenticatedRoute,
+} as any)
+const AuthenticatedTrustedContactsRoute =
+  AuthenticatedTrustedContactsRouteImport.update({
+    id: '/trusted-contacts',
+    path: '/trusted-contacts',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any)
+const AuthenticatedAdminIndexRoute = AuthenticatedAdminIndexRouteImport.update({
+  id: '/admin/',
+  path: '/admin/',
+  getParentRoute: () => AuthenticatedRoute,
+} as any)
+const AuthenticatedAdminAnalyticsRoute =
+  AuthenticatedAdminAnalyticsRouteImport.update({
+    id: '/admin/analytics',
+    path: '/admin/analytics',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any)
+const AuthenticatedAdminEmergenciesRoute =
+  AuthenticatedAdminEmergenciesRouteImport.update({
+    id: '/admin/emergencies',
+    path: '/admin/emergencies',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any)
+const AuthenticatedAdminUsersRoute = AuthenticatedAdminUsersRouteImport.update({
+  id: '/admin/users',
+  path: '/admin/users',
+  getParentRoute: () => AuthenticatedRoute,
+} as any)
+const AuthenticatedTrustedContactDashboardRoute =
+  AuthenticatedTrustedContactDashboardRouteImport.update({
+    id: '/trusted-contact/dashboard',
+    path: '/trusted-contact/dashboard',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/forgot-password': typeof ForgotPasswordRoute
+  '/login': typeof LoginRoute
+  '/register': typeof RegisterRoute
+  '/alerts': typeof AuthenticatedAlertsRoute
+  '/dashboard': typeof AuthenticatedDashboardRoute
+  '/demo': typeof AuthenticatedDemoRoute
+  '/digital-twin': typeof AuthenticatedDigitalTwinRoute
+  '/emergency-history': typeof AuthenticatedEmergencyHistoryRoute
+  '/location': typeof AuthenticatedLocationRoute
+  '/monitoring': typeof AuthenticatedMonitoringRoute
+  '/notifications': typeof AuthenticatedNotificationsRoute
+  '/profile': typeof AuthenticatedProfileRoute
+  '/safety-tips': typeof AuthenticatedSafetyTipsRoute
+  '/settings': typeof AuthenticatedSettingsRoute
+  '/trusted-contacts': typeof AuthenticatedTrustedContactsRoute
+  '/admin/analytics': typeof AuthenticatedAdminAnalyticsRoute
+  '/admin/emergencies': typeof AuthenticatedAdminEmergenciesRoute
+  '/admin/users': typeof AuthenticatedAdminUsersRoute
+  '/trusted-contact/dashboard': typeof AuthenticatedTrustedContactDashboardRoute
+  '/admin/': typeof AuthenticatedAdminIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/forgot-password': typeof ForgotPasswordRoute
+  '/login': typeof LoginRoute
+  '/register': typeof RegisterRoute
+  '/alerts': typeof AuthenticatedAlertsRoute
+  '/dashboard': typeof AuthenticatedDashboardRoute
+  '/demo': typeof AuthenticatedDemoRoute
+  '/digital-twin': typeof AuthenticatedDigitalTwinRoute
+  '/emergency-history': typeof AuthenticatedEmergencyHistoryRoute
+  '/location': typeof AuthenticatedLocationRoute
+  '/monitoring': typeof AuthenticatedMonitoringRoute
+  '/notifications': typeof AuthenticatedNotificationsRoute
+  '/profile': typeof AuthenticatedProfileRoute
+  '/safety-tips': typeof AuthenticatedSafetyTipsRoute
+  '/settings': typeof AuthenticatedSettingsRoute
+  '/trusted-contacts': typeof AuthenticatedTrustedContactsRoute
+  '/admin/analytics': typeof AuthenticatedAdminAnalyticsRoute
+  '/admin/emergencies': typeof AuthenticatedAdminEmergenciesRoute
+  '/admin/users': typeof AuthenticatedAdminUsersRoute
+  '/trusted-contact/dashboard': typeof AuthenticatedTrustedContactDashboardRoute
+  '/admin': typeof AuthenticatedAdminIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/_authenticated': typeof AuthenticatedRouteWithChildren
+  '/forgot-password': typeof ForgotPasswordRoute
+  '/login': typeof LoginRoute
+  '/register': typeof RegisterRoute
+  '/_authenticated/alerts': typeof AuthenticatedAlertsRoute
+  '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
+  '/_authenticated/demo': typeof AuthenticatedDemoRoute
+  '/_authenticated/digital-twin': typeof AuthenticatedDigitalTwinRoute
+  '/_authenticated/emergency-history': typeof AuthenticatedEmergencyHistoryRoute
+  '/_authenticated/location': typeof AuthenticatedLocationRoute
+  '/_authenticated/monitoring': typeof AuthenticatedMonitoringRoute
+  '/_authenticated/notifications': typeof AuthenticatedNotificationsRoute
+  '/_authenticated/profile': typeof AuthenticatedProfileRoute
+  '/_authenticated/safety-tips': typeof AuthenticatedSafetyTipsRoute
+  '/_authenticated/settings': typeof AuthenticatedSettingsRoute
+  '/_authenticated/trusted-contacts': typeof AuthenticatedTrustedContactsRoute
+  '/_authenticated/admin/analytics': typeof AuthenticatedAdminAnalyticsRoute
+  '/_authenticated/admin/emergencies': typeof AuthenticatedAdminEmergenciesRoute
+  '/_authenticated/admin/users': typeof AuthenticatedAdminUsersRoute
+  '/_authenticated/trusted-contact/dashboard': typeof AuthenticatedTrustedContactDashboardRoute
+  '/_authenticated/admin/': typeof AuthenticatedAdminIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths:
+    | '/'
+    | '/forgot-password'
+    | '/login'
+    | '/register'
+    | '/alerts'
+    | '/dashboard'
+    | '/demo'
+    | '/digital-twin'
+    | '/emergency-history'
+    | '/location'
+    | '/monitoring'
+    | '/notifications'
+    | '/profile'
+    | '/safety-tips'
+    | '/settings'
+    | '/trusted-contacts'
+    | '/admin/analytics'
+    | '/admin/emergencies'
+    | '/admin/users'
+    | '/trusted-contact/dashboard'
+    | '/admin/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to:
+    | '/'
+    | '/forgot-password'
+    | '/login'
+    | '/register'
+    | '/alerts'
+    | '/dashboard'
+    | '/demo'
+    | '/digital-twin'
+    | '/emergency-history'
+    | '/location'
+    | '/monitoring'
+    | '/notifications'
+    | '/profile'
+    | '/safety-tips'
+    | '/settings'
+    | '/trusted-contacts'
+    | '/admin/analytics'
+    | '/admin/emergencies'
+    | '/admin/users'
+    | '/trusted-contact/dashboard'
+    | '/admin'
+  id:
+    | '__root__'
+    | '/'
+    | '/_authenticated'
+    | '/forgot-password'
+    | '/login'
+    | '/register'
+    | '/_authenticated/alerts'
+    | '/_authenticated/dashboard'
+    | '/_authenticated/demo'
+    | '/_authenticated/digital-twin'
+    | '/_authenticated/emergency-history'
+    | '/_authenticated/location'
+    | '/_authenticated/monitoring'
+    | '/_authenticated/notifications'
+    | '/_authenticated/profile'
+    | '/_authenticated/safety-tips'
+    | '/_authenticated/settings'
+    | '/_authenticated/trusted-contacts'
+    | '/_authenticated/admin/analytics'
+    | '/_authenticated/admin/emergencies'
+    | '/_authenticated/admin/users'
+    | '/_authenticated/trusted-contact/dashboard'
+    | '/_authenticated/admin/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AuthenticatedRoute: typeof AuthenticatedRouteWithChildren
+  ForgotPasswordRoute: typeof ForgotPasswordRoute
+  LoginRoute: typeof LoginRoute
+  RegisterRoute: typeof RegisterRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -48,11 +310,207 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_authenticated': {
+      id: '/_authenticated'
+      path: ''
+      fullPath: '/'
+      preLoaderRoute: typeof AuthenticatedRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/forgot-password': {
+      id: '/forgot-password'
+      path: '/forgot-password'
+      fullPath: '/forgot-password'
+      preLoaderRoute: typeof ForgotPasswordRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/login': {
+      id: '/login'
+      path: '/login'
+      fullPath: '/login'
+      preLoaderRoute: typeof LoginRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/register': {
+      id: '/register'
+      path: '/register'
+      fullPath: '/register'
+      preLoaderRoute: typeof RegisterRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_authenticated/alerts': {
+      id: '/_authenticated/alerts'
+      path: '/alerts'
+      fullPath: '/alerts'
+      preLoaderRoute: typeof AuthenticatedAlertsRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/dashboard': {
+      id: '/_authenticated/dashboard'
+      path: '/dashboard'
+      fullPath: '/dashboard'
+      preLoaderRoute: typeof AuthenticatedDashboardRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/demo': {
+      id: '/_authenticated/demo'
+      path: '/demo'
+      fullPath: '/demo'
+      preLoaderRoute: typeof AuthenticatedDemoRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/digital-twin': {
+      id: '/_authenticated/digital-twin'
+      path: '/digital-twin'
+      fullPath: '/digital-twin'
+      preLoaderRoute: typeof AuthenticatedDigitalTwinRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/emergency-history': {
+      id: '/_authenticated/emergency-history'
+      path: '/emergency-history'
+      fullPath: '/emergency-history'
+      preLoaderRoute: typeof AuthenticatedEmergencyHistoryRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/location': {
+      id: '/_authenticated/location'
+      path: '/location'
+      fullPath: '/location'
+      preLoaderRoute: typeof AuthenticatedLocationRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/monitoring': {
+      id: '/_authenticated/monitoring'
+      path: '/monitoring'
+      fullPath: '/monitoring'
+      preLoaderRoute: typeof AuthenticatedMonitoringRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/notifications': {
+      id: '/_authenticated/notifications'
+      path: '/notifications'
+      fullPath: '/notifications'
+      preLoaderRoute: typeof AuthenticatedNotificationsRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/profile': {
+      id: '/_authenticated/profile'
+      path: '/profile'
+      fullPath: '/profile'
+      preLoaderRoute: typeof AuthenticatedProfileRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/safety-tips': {
+      id: '/_authenticated/safety-tips'
+      path: '/safety-tips'
+      fullPath: '/safety-tips'
+      preLoaderRoute: typeof AuthenticatedSafetyTipsRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/settings': {
+      id: '/_authenticated/settings'
+      path: '/settings'
+      fullPath: '/settings'
+      preLoaderRoute: typeof AuthenticatedSettingsRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/trusted-contacts': {
+      id: '/_authenticated/trusted-contacts'
+      path: '/trusted-contacts'
+      fullPath: '/trusted-contacts'
+      preLoaderRoute: typeof AuthenticatedTrustedContactsRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/admin/': {
+      id: '/_authenticated/admin/'
+      path: '/admin'
+      fullPath: '/admin/'
+      preLoaderRoute: typeof AuthenticatedAdminIndexRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/admin/analytics': {
+      id: '/_authenticated/admin/analytics'
+      path: '/admin/analytics'
+      fullPath: '/admin/analytics'
+      preLoaderRoute: typeof AuthenticatedAdminAnalyticsRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/admin/emergencies': {
+      id: '/_authenticated/admin/emergencies'
+      path: '/admin/emergencies'
+      fullPath: '/admin/emergencies'
+      preLoaderRoute: typeof AuthenticatedAdminEmergenciesRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/admin/users': {
+      id: '/_authenticated/admin/users'
+      path: '/admin/users'
+      fullPath: '/admin/users'
+      preLoaderRoute: typeof AuthenticatedAdminUsersRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/trusted-contact/dashboard': {
+      id: '/_authenticated/trusted-contact/dashboard'
+      path: '/trusted-contact/dashboard'
+      fullPath: '/trusted-contact/dashboard'
+      preLoaderRoute: typeof AuthenticatedTrustedContactDashboardRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
   }
 }
 
+interface AuthenticatedRouteChildren {
+  AuthenticatedAlertsRoute: typeof AuthenticatedAlertsRoute
+  AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
+  AuthenticatedDemoRoute: typeof AuthenticatedDemoRoute
+  AuthenticatedDigitalTwinRoute: typeof AuthenticatedDigitalTwinRoute
+  AuthenticatedEmergencyHistoryRoute: typeof AuthenticatedEmergencyHistoryRoute
+  AuthenticatedLocationRoute: typeof AuthenticatedLocationRoute
+  AuthenticatedMonitoringRoute: typeof AuthenticatedMonitoringRoute
+  AuthenticatedNotificationsRoute: typeof AuthenticatedNotificationsRoute
+  AuthenticatedProfileRoute: typeof AuthenticatedProfileRoute
+  AuthenticatedSafetyTipsRoute: typeof AuthenticatedSafetyTipsRoute
+  AuthenticatedSettingsRoute: typeof AuthenticatedSettingsRoute
+  AuthenticatedTrustedContactsRoute: typeof AuthenticatedTrustedContactsRoute
+  AuthenticatedAdminAnalyticsRoute: typeof AuthenticatedAdminAnalyticsRoute
+  AuthenticatedAdminEmergenciesRoute: typeof AuthenticatedAdminEmergenciesRoute
+  AuthenticatedAdminUsersRoute: typeof AuthenticatedAdminUsersRoute
+  AuthenticatedTrustedContactDashboardRoute: typeof AuthenticatedTrustedContactDashboardRoute
+  AuthenticatedAdminIndexRoute: typeof AuthenticatedAdminIndexRoute
+}
+
+const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
+  AuthenticatedAlertsRoute: AuthenticatedAlertsRoute,
+  AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
+  AuthenticatedDemoRoute: AuthenticatedDemoRoute,
+  AuthenticatedDigitalTwinRoute: AuthenticatedDigitalTwinRoute,
+  AuthenticatedEmergencyHistoryRoute: AuthenticatedEmergencyHistoryRoute,
+  AuthenticatedLocationRoute: AuthenticatedLocationRoute,
+  AuthenticatedMonitoringRoute: AuthenticatedMonitoringRoute,
+  AuthenticatedNotificationsRoute: AuthenticatedNotificationsRoute,
+  AuthenticatedProfileRoute: AuthenticatedProfileRoute,
+  AuthenticatedSafetyTipsRoute: AuthenticatedSafetyTipsRoute,
+  AuthenticatedSettingsRoute: AuthenticatedSettingsRoute,
+  AuthenticatedTrustedContactsRoute: AuthenticatedTrustedContactsRoute,
+  AuthenticatedAdminAnalyticsRoute: AuthenticatedAdminAnalyticsRoute,
+  AuthenticatedAdminEmergenciesRoute: AuthenticatedAdminEmergenciesRoute,
+  AuthenticatedAdminUsersRoute: AuthenticatedAdminUsersRoute,
+  AuthenticatedTrustedContactDashboardRoute:
+    AuthenticatedTrustedContactDashboardRoute,
+  AuthenticatedAdminIndexRoute: AuthenticatedAdminIndexRoute,
+}
+
+const AuthenticatedRouteWithChildren = AuthenticatedRoute._addFileChildren(
+  AuthenticatedRouteChildren,
+)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AuthenticatedRoute: AuthenticatedRouteWithChildren,
+  ForgotPasswordRoute: ForgotPasswordRoute,
+  LoginRoute: LoginRoute,
+  RegisterRoute: RegisterRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
