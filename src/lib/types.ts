@@ -100,9 +100,9 @@ export interface EmergencyEvent {
   userId: string;
   triggerType: TriggerType;
   riskLevel: RiskLevel;
-  locationId?: string;
-  latitude?: number;
-  longitude?: number;
+  locationId?: string | undefined;
+  latitude?: number | undefined;
+  longitude?: number | undefined;
   status: EmergencyStatus;
   notifiedContactIds: string[];
   timeline: TimelineEntry[];
@@ -122,7 +122,7 @@ export interface LocationData {
 export interface AppNotification {
   id: string;
   userId: string;
-  emergencyEventId?: string;
+  emergencyEventId?: string | undefined;
   type: NotificationType;
   title: string;
   message: string;
