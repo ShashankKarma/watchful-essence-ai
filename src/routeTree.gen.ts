@@ -26,6 +26,11 @@ import { Route as AuthenticatedProfileRouteImport } from './routes/_authenticate
 import { Route as AuthenticatedSafetyTipsRouteImport } from './routes/_authenticated.safety-tips'
 import { Route as AuthenticatedSettingsRouteImport } from './routes/_authenticated.settings'
 import { Route as AuthenticatedTrustedContactsRouteImport } from './routes/_authenticated.trusted-contacts'
+import { Route as AuthenticatedAdminIndexRouteImport } from './routes/_authenticated.admin.index'
+import { Route as AuthenticatedAdminAnalyticsRouteImport } from './routes/_authenticated.admin.analytics'
+import { Route as AuthenticatedAdminEmergenciesRouteImport } from './routes/_authenticated.admin.emergencies'
+import { Route as AuthenticatedAdminUsersRouteImport } from './routes/_authenticated.admin.users'
+import { Route as AuthenticatedTrustedContactDashboardRouteImport } from './routes/_authenticated.trusted-contact.dashboard'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -115,6 +120,34 @@ const AuthenticatedTrustedContactsRoute =
     path: '/trusted-contacts',
     getParentRoute: () => AuthenticatedRoute,
   } as any)
+const AuthenticatedAdminIndexRoute = AuthenticatedAdminIndexRouteImport.update({
+  id: '/admin/',
+  path: '/admin/',
+  getParentRoute: () => AuthenticatedRoute,
+} as any)
+const AuthenticatedAdminAnalyticsRoute =
+  AuthenticatedAdminAnalyticsRouteImport.update({
+    id: '/admin/analytics',
+    path: '/admin/analytics',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any)
+const AuthenticatedAdminEmergenciesRoute =
+  AuthenticatedAdminEmergenciesRouteImport.update({
+    id: '/admin/emergencies',
+    path: '/admin/emergencies',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any)
+const AuthenticatedAdminUsersRoute = AuthenticatedAdminUsersRouteImport.update({
+  id: '/admin/users',
+  path: '/admin/users',
+  getParentRoute: () => AuthenticatedRoute,
+} as any)
+const AuthenticatedTrustedContactDashboardRoute =
+  AuthenticatedTrustedContactDashboardRouteImport.update({
+    id: '/trusted-contact/dashboard',
+    path: '/trusted-contact/dashboard',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -133,6 +166,11 @@ export interface FileRoutesByFullPath {
   '/safety-tips': typeof AuthenticatedSafetyTipsRoute
   '/settings': typeof AuthenticatedSettingsRoute
   '/trusted-contacts': typeof AuthenticatedTrustedContactsRoute
+  '/admin/analytics': typeof AuthenticatedAdminAnalyticsRoute
+  '/admin/emergencies': typeof AuthenticatedAdminEmergenciesRoute
+  '/admin/users': typeof AuthenticatedAdminUsersRoute
+  '/trusted-contact/dashboard': typeof AuthenticatedTrustedContactDashboardRoute
+  '/admin/': typeof AuthenticatedAdminIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -151,6 +189,11 @@ export interface FileRoutesByTo {
   '/safety-tips': typeof AuthenticatedSafetyTipsRoute
   '/settings': typeof AuthenticatedSettingsRoute
   '/trusted-contacts': typeof AuthenticatedTrustedContactsRoute
+  '/admin/analytics': typeof AuthenticatedAdminAnalyticsRoute
+  '/admin/emergencies': typeof AuthenticatedAdminEmergenciesRoute
+  '/admin/users': typeof AuthenticatedAdminUsersRoute
+  '/trusted-contact/dashboard': typeof AuthenticatedTrustedContactDashboardRoute
+  '/admin': typeof AuthenticatedAdminIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -171,6 +214,11 @@ export interface FileRoutesById {
   '/_authenticated/safety-tips': typeof AuthenticatedSafetyTipsRoute
   '/_authenticated/settings': typeof AuthenticatedSettingsRoute
   '/_authenticated/trusted-contacts': typeof AuthenticatedTrustedContactsRoute
+  '/_authenticated/admin/analytics': typeof AuthenticatedAdminAnalyticsRoute
+  '/_authenticated/admin/emergencies': typeof AuthenticatedAdminEmergenciesRoute
+  '/_authenticated/admin/users': typeof AuthenticatedAdminUsersRoute
+  '/_authenticated/trusted-contact/dashboard': typeof AuthenticatedTrustedContactDashboardRoute
+  '/_authenticated/admin/': typeof AuthenticatedAdminIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -191,6 +239,11 @@ export interface FileRouteTypes {
     | '/safety-tips'
     | '/settings'
     | '/trusted-contacts'
+    | '/admin/analytics'
+    | '/admin/emergencies'
+    | '/admin/users'
+    | '/trusted-contact/dashboard'
+    | '/admin/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -209,6 +262,11 @@ export interface FileRouteTypes {
     | '/safety-tips'
     | '/settings'
     | '/trusted-contacts'
+    | '/admin/analytics'
+    | '/admin/emergencies'
+    | '/admin/users'
+    | '/trusted-contact/dashboard'
+    | '/admin'
   id:
     | '__root__'
     | '/'
@@ -228,6 +286,11 @@ export interface FileRouteTypes {
     | '/_authenticated/safety-tips'
     | '/_authenticated/settings'
     | '/_authenticated/trusted-contacts'
+    | '/_authenticated/admin/analytics'
+    | '/_authenticated/admin/emergencies'
+    | '/_authenticated/admin/users'
+    | '/_authenticated/trusted-contact/dashboard'
+    | '/_authenticated/admin/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -359,6 +422,41 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedTrustedContactsRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
+    '/_authenticated/admin/': {
+      id: '/_authenticated/admin/'
+      path: '/admin'
+      fullPath: '/admin/'
+      preLoaderRoute: typeof AuthenticatedAdminIndexRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/admin/analytics': {
+      id: '/_authenticated/admin/analytics'
+      path: '/admin/analytics'
+      fullPath: '/admin/analytics'
+      preLoaderRoute: typeof AuthenticatedAdminAnalyticsRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/admin/emergencies': {
+      id: '/_authenticated/admin/emergencies'
+      path: '/admin/emergencies'
+      fullPath: '/admin/emergencies'
+      preLoaderRoute: typeof AuthenticatedAdminEmergenciesRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/admin/users': {
+      id: '/_authenticated/admin/users'
+      path: '/admin/users'
+      fullPath: '/admin/users'
+      preLoaderRoute: typeof AuthenticatedAdminUsersRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/trusted-contact/dashboard': {
+      id: '/_authenticated/trusted-contact/dashboard'
+      path: '/trusted-contact/dashboard'
+      fullPath: '/trusted-contact/dashboard'
+      preLoaderRoute: typeof AuthenticatedTrustedContactDashboardRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
   }
 }
 
@@ -375,6 +473,11 @@ interface AuthenticatedRouteChildren {
   AuthenticatedSafetyTipsRoute: typeof AuthenticatedSafetyTipsRoute
   AuthenticatedSettingsRoute: typeof AuthenticatedSettingsRoute
   AuthenticatedTrustedContactsRoute: typeof AuthenticatedTrustedContactsRoute
+  AuthenticatedAdminAnalyticsRoute: typeof AuthenticatedAdminAnalyticsRoute
+  AuthenticatedAdminEmergenciesRoute: typeof AuthenticatedAdminEmergenciesRoute
+  AuthenticatedAdminUsersRoute: typeof AuthenticatedAdminUsersRoute
+  AuthenticatedTrustedContactDashboardRoute: typeof AuthenticatedTrustedContactDashboardRoute
+  AuthenticatedAdminIndexRoute: typeof AuthenticatedAdminIndexRoute
 }
 
 const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
@@ -390,6 +493,12 @@ const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
   AuthenticatedSafetyTipsRoute: AuthenticatedSafetyTipsRoute,
   AuthenticatedSettingsRoute: AuthenticatedSettingsRoute,
   AuthenticatedTrustedContactsRoute: AuthenticatedTrustedContactsRoute,
+  AuthenticatedAdminAnalyticsRoute: AuthenticatedAdminAnalyticsRoute,
+  AuthenticatedAdminEmergenciesRoute: AuthenticatedAdminEmergenciesRoute,
+  AuthenticatedAdminUsersRoute: AuthenticatedAdminUsersRoute,
+  AuthenticatedTrustedContactDashboardRoute:
+    AuthenticatedTrustedContactDashboardRoute,
+  AuthenticatedAdminIndexRoute: AuthenticatedAdminIndexRoute,
 }
 
 const AuthenticatedRouteWithChildren = AuthenticatedRoute._addFileChildren(
