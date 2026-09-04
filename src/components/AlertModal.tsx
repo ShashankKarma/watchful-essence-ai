@@ -22,8 +22,7 @@ export function AlertModal({
   return (
     <Dialog open>
       <DialogContent
-        showCloseButton={false}
-        className="border-danger/50 bg-card sm:max-w-md"
+                className="border-danger/50 bg-card sm:max-w-md"
         onInteractOutside={(e) => e.preventDefault()}
         onEscapeKeyDown={(e) => e.preventDefault()}
       >

@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
-import { HeartHandshake, MapPin } from "lucide-react";
+import { HeartHandshake } from "lucide-react";
 import { PageHeader } from "@/components/PageHeader";
 import { StatusBadge, RiskBadge, DemoBadge } from "@/components/RiskBadge";
 import { EmergencyTimeline } from "@/components/Timelines";
@@ -72,7 +72,7 @@ function TrustedContactDashboard() {
               height={220}
             />
           ) : (
-            <EmptyState title="No shared location" icon={MapPin} />
+            <EmptyState title="No shared location" description="No coordinates were attached to these events." />
           )}
         </div>
       </div>

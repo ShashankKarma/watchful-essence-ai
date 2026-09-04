@@ -40,15 +40,15 @@ function SettingsPage() {
           <div>
             <div className="flex items-center justify-between">
               <label className="text-sm font-medium">Anomaly sensitivity</label>
-              <span className="font-display text-sm font-bold">{settings.sensitivity}%</span>
+              <span className="font-display text-sm font-bold">{settings.riskSensitivity}%</span>
             </div>
             <Slider
               className="mt-3"
               min={10}
               max={100}
               step={5}
-              value={[settings.sensitivity]}
-              onValueChange={([v]) => void saveSettings({ sensitivity: v })}
+              value={[settings.riskSensitivity]}
+              onValueChange={([v]) => void saveSettings({ riskSensitivity: v ?? 50 })}
             />
             <p className="mt-2 text-xs text-muted-foreground">
               Higher sensitivity raises anomaly scores for smaller deviations from your baseline.
@@ -66,7 +66,7 @@ function SettingsPage() {
               max={120}
               step={5}
               value={[settings.alertTimeoutSeconds]}
-              onValueChange={([v]) => void saveSettings({ alertTimeoutSeconds: v })}
+              onValueChange={([v]) => void saveSettings({ alertTimeoutSeconds: v ?? 30 })}
             />
             <p className="mt-2 text-xs text-muted-foreground">
               If you do not respond within this window the alert auto-escalates to an emergency.
@@ -74,10 +74,10 @@ function SettingsPage() {
           </div>
 
           <Toggle
-            label="Auto-escalate unanswered alerts"
-            description="Create an emergency event when the countdown expires."
-            checked={settings.autoEscalate}
-            onChange={(v) => void saveSettings({ autoEscalate: v })}
+            label="Store behaviour history"
+            description="Keep behaviour samples so the Digital Twin can keep learning."
+            checked={settings.storeBehaviourHistory}
+            onChange={(v) => void saveSettings({ storeBehaviourHistory: v })}
           />
         </div>
 
@@ -86,14 +86,14 @@ function SettingsPage() {
           <Toggle
             label="In-app notifications"
             description="Alerts, escalations and contact updates."
-            checked={settings.notificationsEnabled}
-            onChange={(v) => void saveSettings({ notificationsEnabled: v })}
+            checked={settings.notifyInApp}
+            onChange={(v) => void saveSettings({ notifyInApp: v })}
           />
           <Toggle
             label="Location tracking"
             description="Store location points for maps and emergency sharing."
-            checked={settings.locationTracking}
-            onChange={(v) => void saveSettings({ locationTracking: v })}
+            checked={settings.locationSharing}
+            onChange={(v) => void saveSettings({ locationSharing: v })}
           />
           <Toggle
             label="Share location with trusted contacts"
@@ -102,10 +102,10 @@ function SettingsPage() {
             onChange={(v) => void saveSettings({ shareLocationWithContacts: v })}
           />
           <Toggle
-            label="Demo mode"
-            description="Marks generated events as simulated."
-            checked={settings.demoMode}
-            onChange={(v) => void saveSettings({ demoMode: v })}
+            label="Monitoring enabled"
+            description="Allow GuardianAI to analyse behaviour samples."
+            checked={settings.monitoringEnabled}
+            onChange={(v) => void saveSettings({ monitoringEnabled: v })}
           />
 
           <div className="border-t border-border pt-4">

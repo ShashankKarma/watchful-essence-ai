@@ -61,7 +61,7 @@ function NotificationsPage() {
                 await load();
               }}
               className={`w-full rounded-2xl border bg-card p-4 text-left ${
-                n.read ? "border-border opacity-70" : "border-primary/50"
+                n.status === "READ" ? "border-border opacity-70" : "border-primary/50"
               }`}
             >
               <div className="flex items-center gap-2">
