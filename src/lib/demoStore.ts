@@ -293,10 +293,10 @@ function seed(): Db {
     ["Use strong unique keys", "Use a password manager and enable two-factor authentication on your primary email.", "Digital Privacy", "key"],
   ].map(([title, description, category, icon], i) => ({
     id: `t-${i}`,
-    title,
-    description,
-    category,
-    icon,
+    title: title!,
+    description: description!,
+    category: category!,
+    icon: icon!,
     createdAt: hoursAgo(24 * 30),
   }));
 

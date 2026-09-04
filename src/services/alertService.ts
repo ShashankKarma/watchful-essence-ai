@@ -37,7 +37,7 @@ export const alertService = {
     return emergencyService.trigger({
       triggerType: response === "NEED_HELP" ? "AI_DETECTION" : "AUTO_ESCALATION",
       riskLevel: alert.riskLevel,
-      simulated: alert.simulated,
+      simulated: alert.simulated ?? false,
       detectionDetail: `Anomaly score ${alert.riskScore} — ${alert.riskLevel}`,
       responseDetail:
         response === "NEED_HELP"

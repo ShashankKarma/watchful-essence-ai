@@ -90,7 +90,7 @@ export const monitoringService = {
           longitude: payload.longitude,
           movementDuration: payload.movementDuration,
           activityDuration: payload.activityDuration,
-          simulated: payload.simulated,
+          simulated: payload.simulated ?? false,
         };
         data.behaviour.push(entry);
         const session = data.sessions.find((s) => s.userId === entry.userId && s.active);
