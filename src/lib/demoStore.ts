@@ -140,7 +140,7 @@ function seed(): Db {
     behaviour.push({
       id: `b-${i}`,
       userId: DEMO_USER_ID,
-      activityType: activities[i % activities.length],
+      activityType: activities[i % activities.length]!,
       timestamp: iso(t),
       latitude: BASE.lat + ((i % 5) - 2) * 0.004,
       longitude: BASE.lng + ((i % 4) - 2) * 0.004,
