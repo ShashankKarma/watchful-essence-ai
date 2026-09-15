@@ -13,7 +13,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
-import org.springframework.util.TimeZone;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -64,7 +63,7 @@ public class AlertService {
 
         alert.setResponse(response);
         alert.setRespondedAt(LocalDateTime.now());
-        alert.setStatus(AlertStatus.RESOLVED);
+        alert.setStatus(response == AlertResponse.SAFE ? AlertStatus.RESOLVED : AlertStatus.ESCALATED);
         alert = safetyAlertRepository.save(alert);
 
         if (response == AlertResponse.NEED_HELP) {
