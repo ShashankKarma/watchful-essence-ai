@@ -1,0 +1,34 @@
+server:
+  port: ${PORT:8080}
+
+spring:
+  application:
+    name: guardianai-backend
+  data:
+    mongodb:
+      uri: ${MONGODB_URI:mongodb://localhost:27017/guardianai}
+  jackson:
+    default-property-inclusion: non_null
+
+app:
+  jwt:
+    secret: ${JWT_SECRET:change-this-super-secret-key-for-guardianai-jwt-signing-min-256-bits}
+    expiration-ms: ${JWT_EXPIRATION:86400000}
+  alert-timeout-seconds: ${ALERT_TIMEOUT_SECONDS:30}
+  cors:
+    allowed-origins: ${CORS_ALLOWED_ORIGINS:http://localhost:3000,http://localhost:5173}
+
+gemini:
+  api-key: ${GEMINI_API_KEY:}
+  model: ${GEMINI_MODEL:gemini-2.5-flash}
+  base-url: ${GEMINI_BASE_URL:https://generativelanguage.googleapis.com}
+
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html
+  api-docs:
+    path: /v3/api-docs
+
+logging:
+  level:
+    com.guardianai: INFO

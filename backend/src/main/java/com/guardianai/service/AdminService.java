@@ -8,6 +8,7 @@ import com.guardianai.model.Role;
 import com.guardianai.model.User;
 import com.guardianai.repository.EmergencyEventRepository;
 import com.guardianai.repository.MonitoringSessionRepository;
+import com.guardianai.repository.RiskAssessmentRepository;
 import com.guardianai.repository.SafetyAlertRepository;
 import com.guardianai.repository.TrustedContactRepository;
 import com.guardianai.repository.UserRepository;
@@ -16,6 +17,9 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Map;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
 
 @Service
 @RequiredArgsConstructor
@@ -26,10 +30,32 @@ public class AdminService {
     private final EmergencyEventRepository emergencyEventRepository;
     private final SafetyAlertRepository safetyAlertRepository;
     private final MonitoringSessionRepository monitoringSessionRepository;
+    private final RiskAssessmentRepository riskAssessmentRepository;
 
     public AdminDashboardResponse dashboard() {
         long monitoringUsers = userRepository.findByRole(Role.USER).stream()
                 .filter(User::isMonitoringEnabled).count();
+        LocalDate today = LocalDate.now();
+        List<com.guardianai.model.SafetyAlert> alerts = safetyAlertRepository.findAll();
+        List<EmergencyEvent> emergencies = emergencyEventRepository.findAll();
+        List<com.guardianai.model.RiskAssessment> risks = riskAssessmentRepository.findAll();
+        List<AdminDashboardResponse.RiskDistribution> distribution = List.of("LOW", "MEDIUM", "HIGH", "CRITICAL")
+                .stream()
+                .map(level -> new AdminDashboardResponse.RiskDistribution(level,
+                        risks.stream().filter(r -> r.getRiskLevel().name().equals(level)).count()))
+                .toList();
+        List<AdminDashboardResponse.TrendPoint> trend = new ArrayList<>();
+        List<AdminDashboardResponse.MonitoringPoint> monitoring = new ArrayList<>();
+        for (int offset = 6; offset >= 0; offset--) {
+            LocalDate date = today.minusDays(offset);
+            String key = date.toString().substring(5);
+            trend.add(new AdminDashboardResponse.TrendPoint(key,
+                    alerts.stream().filter(a -> sameDay(a.getCreatedAt(), date)).count(),
+                    emergencies.stream().filter(e -> sameDay(e.getTimestamp(), date)).count()));
+            monitoring.add(new AdminDashboardResponse.MonitoringPoint(key,
+                    monitoringSessionRepository.findAll().stream()
+                            .filter(session -> sameDay(session.getStartedAt(), date)).count()));
+        }
         return AdminDashboardResponse.builder()
                 .totalUsers(userRepository.count())
                 .totalTrustedContacts(trustedContactRepository.count())
@@ -38,7 +64,18 @@ public class AdminService {
                 .totalAlerts(safetyAlertRepository.count())
                 .openAlerts(safetyAlertRepository.findByStatus(AlertStatus.OPEN).size())
                 .monitoringUsers(monitoringUsers)
+                .activeMonitoringSessions(monitoringSessionRepository.findAll().stream().filter(m -> m.isActive()).count())
+                .alertsToday(alerts.stream().filter(a -> sameDay(a.getCreatedAt(), today)).count())
+                .highRiskEvents(risks.stream().filter(r -> r.getRiskLevel().ordinal() >= 2).count())
+                .emergencyEvents(emergencies.size())
+                .riskDistribution(distribution)
+                .alertsOverTime(trend)
+                .monitoringActivity(monitoring)
                 .build();
+    }
+
+    private boolean sameDay(LocalDateTime value, LocalDate date) {
+        return value != null && value.toLocalDate().equals(date);
     }
 
     public List<User> users() {
