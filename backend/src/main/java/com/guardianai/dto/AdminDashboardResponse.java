@@ -5,6 +5,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Data
 @Builder
 @NoArgsConstructor
@@ -17,4 +19,36 @@ public class AdminDashboardResponse {
     private long totalAlerts;
     private long openAlerts;
     private long monitoringUsers;
+    private long activeMonitoringSessions;
+    private long alertsToday;
+    private long highRiskEvents;
+    private long emergencyEvents;
+    private List<RiskDistribution> riskDistribution;
+    private List<TrendPoint> alertsOverTime;
+    private List<MonitoringPoint> monitoringActivity;
+
+    @Data
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class RiskDistribution {
+        private String level;
+        private long count;
+    }
+
+    @Data
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class TrendPoint {
+        private String date;
+        private long alerts;
+        private long emergencies;
+    }
+
+    @Data
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class MonitoringPoint {
+        private String date;
+        private long sessions;
+    }
 }
