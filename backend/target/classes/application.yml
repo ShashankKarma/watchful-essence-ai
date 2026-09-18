@@ -7,6 +7,9 @@ spring:
   data:
     mongodb:
       uri: ${MONGODB_URI:mongodb://localhost:27017/guardianai}
+      auto-index-creation: ${MONGODB_AUTO_INDEX_CREATION:true}
+      connect-timeout: ${MONGODB_CONNECT_TIMEOUT:10s}
+      socket-timeout: ${MONGODB_SOCKET_TIMEOUT:10s}
   jackson:
     default-property-inclusion: non_null
 
@@ -28,6 +31,25 @@ springdoc:
     path: /swagger-ui.html
   api-docs:
     path: /v3/api-docs
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+  endpoint:
+    health:
+      probes:
+        enabled: true
+      show-details: never
+      group:
+        liveness:
+          include: livenessState
+        readiness:
+          include: readinessState,mongo
+  health:
+    mongo:
+      enabled: true
 
 logging:
   level:
