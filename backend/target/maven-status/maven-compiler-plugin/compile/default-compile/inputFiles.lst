@@ -14,6 +14,7 @@
 /dev-server/backend/src/main/java/com/guardianai/controller/DemoController.java
 /dev-server/backend/src/main/java/com/guardianai/controller/DigitalTwinController.java
 /dev-server/backend/src/main/java/com/guardianai/controller/EmergencyController.java
+/dev-server/backend/src/main/java/com/guardianai/controller/HealthController.java
 /dev-server/backend/src/main/java/com/guardianai/controller/LocationController.java
 /dev-server/backend/src/main/java/com/guardianai/controller/MonitoringController.java
 /dev-server/backend/src/main/java/com/guardianai/controller/NotificationController.java
@@ -96,6 +97,7 @@
 /dev-server/backend/src/main/java/com/guardianai/service/LocationService.java
 /dev-server/backend/src/main/java/com/guardianai/service/MonitoringService.java
 /dev-server/backend/src/main/java/com/guardianai/service/NotificationService.java
+/dev-server/backend/src/main/java/com/guardianai/service/PersistenceVerificationService.java
 /dev-server/backend/src/main/java/com/guardianai/service/SafetyTipService.java
 /dev-server/backend/src/main/java/com/guardianai/service/TrustedContactService.java
 /dev-server/backend/src/main/java/com/guardianai/service/UserService.java

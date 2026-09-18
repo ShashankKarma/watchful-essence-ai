@@ -81,8 +81,24 @@ ready-to-use demo account on startup.
 ### Configure environment
 ```bash
 cp .env.example .env
-# edit .env with your MongoDB URI, JWT secret, and (optionally) GEMINI_API_KEY
+# set MONGODB_URI to the MongoDB Atlas SRV string, then set JWT_SECRET
+# and (optionally) GEMINI_API_KEY
 ```
+
+For MongoDB Atlas:
+1. Create a database user in Atlas and copy the application connection string.
+2. Replace `<username>`, `<password>`, and `<cluster>` in `MONGODB_URI`.
+3. URL-encode special characters in the username or password.
+4. Add the deployed backend's outbound IP range to Atlas Network Access. For a
+   temporary development check only, Atlas allows `0.0.0.0/0`, but it should not
+   be used as a permanent production rule.
+5. Keep `MONGODB_URI` and `JWT_SECRET` in the hosting provider's environment
+   settings, never in source control.
+
+The application uses Spring Data MongoDB repositories for all user, safety,
+alert, emergency, location, notification, and digital-twin data. On startup,
+`DataSeeder` creates the demo records only when the database is empty; existing
+Atlas data is left untouched.
 
 ### Run
 ```bash
@@ -109,12 +125,30 @@ http://localhost:8080/swagger-ui.html
 ```
 OpenAPI JSON: `http://localhost:8080/v3/api-docs`
 
+## Persistence and deployment health checks
+
+Use these endpoints after deployment:
+
+| Endpoint | Purpose | Expected result |
+|---|---|---|
+| `/actuator/health` | Basic application and MongoDB health | HTTP 200 with `{"status":"UP"}` |
+| `/actuator/health/readiness` | Load-balancer readiness, including MongoDB | HTTP 200 when ready |
+| `/actuator/health/liveness` | Process liveness | HTTP 200 while the process is running |
+| `/api/health/persistence` | Performs a temporary MongoDB write, read, and delete | HTTP 200 with `writeReadVerified: true` |
+
+`/api/health/persistence` removes its temporary probe document after checking
+it, so it can be used as a deployment smoke test without leaving test data in
+Atlas. Do not expose management endpoints publicly beyond the health paths.
+
 ## Deployment
 
 - Package as a jar (`mvn clean package`) and run behind a reverse proxy (Nginx) with HTTPS.
 - Provide `MONGODB_URI`, `JWT_SECRET`, `GEMINI_API_KEY`, and `CORS_ALLOWED_ORIGINS` as environment
-  variables (see `.env.example`).
-- Suitable for Docker/Render/Railway/EC2/Azure App Service. Use MongoDB Atlas for managed DB.
+  variables (see `.env.example`). The Atlas URI must use `mongodb+srv://` and include the
+  target database name.
+- Configure the platform health check as `/actuator/health/readiness` and use
+  `/api/health/persistence` as a post-deploy smoke test.
+- Suitable for Docker/Render/Railway/EC2/Azure App Service. MongoDB Atlas supplies the managed DB.
 - Rotate `JWT_SECRET` and restrict CORS origins to your production frontend domain(s) in production.
 
 ## Safety Disclaimer
