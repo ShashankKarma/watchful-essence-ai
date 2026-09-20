@@ -94,6 +94,7 @@ For MongoDB Atlas:
    be used as a permanent production rule.
 5. Keep `MONGODB_URI` and `JWT_SECRET` in the hosting provider's environment
    settings, never in source control.
+6. Set `HEALTH_CHECK_TOKEN` to a long random value in the hosting provider.
 
 The application uses Spring Data MongoDB repositories for all user, safety,
 alert, emergency, location, notification, and digital-twin data. On startup,
@@ -134,20 +135,23 @@ Use these endpoints after deployment:
 | `/actuator/health` | Basic application and MongoDB health | HTTP 200 with `{"status":"UP"}` |
 | `/actuator/health/readiness` | Load-balancer readiness, including MongoDB | HTTP 200 when ready |
 | `/actuator/health/liveness` | Process liveness | HTTP 200 while the process is running |
-| `/api/health/persistence` | Performs a temporary MongoDB write, read, and delete | HTTP 200 with `writeReadVerified: true` |
+| `/api/health/persistence` | Performs a temporary MongoDB write, read, and delete | HTTP 200 with `writeReadVerified: true` when called with `X-Health-Check-Token` |
 
 `/api/health/persistence` removes its temporary probe document after checking
 it, so it can be used as a deployment smoke test without leaving test data in
-Atlas. Do not expose management endpoints publicly beyond the health paths.
+Atlas. It requires the configured `HEALTH_CHECK_TOKEN` to prevent unauthenticated
+callers from repeatedly writing to the database. Do not expose management
+endpoints publicly beyond the health paths.
 
 ## Deployment
 
 - Package as a jar (`mvn clean package`) and run behind a reverse proxy (Nginx) with HTTPS.
-- Provide `MONGODB_URI`, `JWT_SECRET`, `GEMINI_API_KEY`, and `CORS_ALLOWED_ORIGINS` as environment
+- Provide `MONGODB_URI`, `JWT_SECRET`, `HEALTH_CHECK_TOKEN`, `GEMINI_API_KEY`, and `CORS_ALLOWED_ORIGINS` as environment
   variables (see `.env.example`). The Atlas URI must use `mongodb+srv://` and include the
   target database name.
 - Configure the platform health check as `/actuator/health/readiness` and use
-  `/api/health/persistence` as a post-deploy smoke test.
+  `/api/health/persistence` with `X-Health-Check-Token: $HEALTH_CHECK_TOKEN` as a
+  post-deploy smoke test.
 - Suitable for Docker/Render/Railway/EC2/Azure App Service. MongoDB Atlas supplies the managed DB.
 - Rotate `JWT_SECRET` and restrict CORS origins to your production frontend domain(s) in production.
 
