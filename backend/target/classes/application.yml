@@ -25,6 +25,10 @@ gemini:
   model: ${GEMINI_MODEL:gemini-2.5-flash}
   base-url: ${GEMINI_BASE_URL:https://generativelanguage.googleapis.com}
 
+messaging:
+  gateway-url: ${MESSAGING_GATEWAY_URL:https://connector-gateway.lovable.dev/gatewayapi}
+  sms-sender: ${SMS_SENDER:GuardianAI}
+
 springdoc:
   swagger-ui:
     path: /swagger-ui.html
