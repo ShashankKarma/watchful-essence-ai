@@ -1,12 +1,15 @@
 import { apiClient, call } from "./apiClient";
 import { db, save, uid } from "@/lib/demoStore";
 import { currentUserId } from "./session";
+import { locationService } from "./locationService";
 import type { EmergencyEvent, RiskLevel, TriggerType } from "@/lib/types";
 
 export interface TriggerEmergencyInput {
   triggerType: TriggerType;
   riskLevel: RiskLevel;
   simulated?: boolean;
+  latitude?: number;
+  longitude?: number;
   detectionDetail?: string;
   responseDetail?: string;
 }
@@ -26,8 +29,8 @@ function localTrigger(input: TriggerEmergencyInput): EmergencyEvent {
     triggerType: input.triggerType,
     riskLevel: input.riskLevel,
     locationId: lastLocation?.id,
-    latitude: lastLocation?.latitude,
-    longitude: lastLocation?.longitude,
+    latitude: input.latitude ?? lastLocation?.latitude,
+    longitude: input.longitude ?? lastLocation?.longitude,
     status: input.triggerType === "AUTO_ESCALATION" ? "AUTO_ESCALATED" : "ACTIVE",
     notifiedContactIds: contacts.map((c) => c.id),
     simulated: input.simulated ?? false,
@@ -48,7 +51,7 @@ function localTrigger(input: TriggerEmergencyInput): EmergencyEvent {
       },
       {
         stage: "Contact Notification",
-        detail: `${contacts.length} trusted contact(s) notified in-app (SMS/calls are simulated)`,
+      detail: `${contacts.length} trusted contact(s) notified in-app (SMS/calls are simulated)`,
         at: at(),
       },
       { stage: "Emergency Event", detail: "Emergency event created and active", at: at() },
@@ -73,7 +76,11 @@ function localTrigger(input: TriggerEmergencyInput): EmergencyEvent {
 export const emergencyService = {
   trigger(input: TriggerEmergencyInput): Promise<EmergencyEvent> {
     return call(
-      () => apiClient.post("/api/sos", input),
+      () => apiClient.post("/api/sos", {
+        latitude: input.latitude,
+        longitude: input.longitude,
+        message: input.responseDetail,
+      }),
       () => localTrigger(input),
     );
   },
@@ -147,13 +154,26 @@ export const emergencyService = {
 };
 
 export const sosService = {
-  trigger(simulated = false) {
-    return emergencyService.trigger({
+  async trigger(simulated = false) {
+    let latitude: number | undefined;
+    let longitude: number | undefined;
+    try {
+      const position = await locationService.readBrowserLocation();
+      latitude = position.coords.latitude;
+      longitude = position.coords.longitude;
+    } catch {
+      // The backend can still create the emergency event when location permission is denied.
+    }
+
+    const input: TriggerEmergencyInput = {
       triggerType: "MANUAL_SOS",
       riskLevel: "CRITICAL",
       simulated,
       detectionDetail: "Manual SOS button pressed",
       responseDetail: "User requested help",
-    });
+    };
+    if (latitude !== undefined) input.latitude = latitude;
+    if (longitude !== undefined) input.longitude = longitude;
+    return emergencyService.trigger(input);
   },
 };

@@ -7,9 +7,7 @@ import com.guardianai.model.NotificationStatus;
 import com.guardianai.model.NotificationType;
 import com.guardianai.model.TrustedContact;
 import com.guardianai.repository.NotificationRepository;
-import com.guardianai.service.notification.EmailNotificationChannel;
 import com.guardianai.service.notification.InAppNotificationChannel;
-import com.guardianai.service.notification.NotificationChannel;
 import com.guardianai.service.notification.SmsNotificationChannel;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -24,7 +22,6 @@ public class NotificationService {
     private final NotificationRepository notificationRepository;
     private final InAppNotificationChannel inAppNotificationChannel;
     private final SmsNotificationChannel smsNotificationChannel;
-    private final EmailNotificationChannel emailNotificationChannel;
 
     public Notification create(String userId, String emergencyEventId, NotificationType type, String title, String message) {
         Notification notification = Notification.builder()
@@ -42,14 +39,18 @@ public class NotificationService {
     }
 
     public void notifyContacts(List<TrustedContact> contacts, String subject, String message) {
+        notifyContacts(contacts, subject, message, false);
+    }
+
+    public void notifyContacts(List<TrustedContact> contacts, String subject, String message, boolean simulated) {
+        if (simulated) {
+            return;
+        }
         for (TrustedContact contact : contacts) {
             if (!contact.isNotificationEnabled()) {
                 continue;
             }
-            List<NotificationChannel> channels = List.of(smsNotificationChannel, emailNotificationChannel);
-            for (NotificationChannel channel : channels) {
-                channel.notifyContact(contact, subject, message);
-            }
+            smsNotificationChannel.notifyContact(contact, subject, message);
         }
     }
 

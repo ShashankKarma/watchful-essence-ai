@@ -178,7 +178,9 @@ export function GuardianProvider({ children }: { children: ReactNode }) {
         const event = await sosService.trigger(simulated);
         setActiveEmergency(event);
         toast.error(simulated ? "[DEMO] SOS triggered" : "SOS triggered", {
-          description: "Trusted contacts notified in-app (simulated).",
+          description: simulated || event.simulated
+            ? "Demo notification recorded; no real message was sent."
+            : "SMS alerts sent to enabled trusted contacts.",
         });
         bump();
       },

@@ -33,14 +33,16 @@ public class EmergencyService {
     private final NotificationService notificationService;
 
     public EmergencyResponse sos(String userId, SosRequest request) {
-        LocationData location = LocationData.builder()
-                .userId(userId)
-                .latitude(request.getLatitude())
-                .longitude(request.getLongitude())
-                .accuracy(0)
-                .timestamp(LocalDateTime.now())
-                .build();
-        location = locationDataRepository.save(location);
+        LocationData location = null;
+        if (request.getLatitude() != null && request.getLongitude() != null) {
+            location = locationDataRepository.save(LocationData.builder()
+                    .userId(userId)
+                    .latitude(request.getLatitude())
+                    .longitude(request.getLongitude())
+                    .accuracy(0)
+                    .timestamp(LocalDateTime.now())
+                    .build());
+        }
 
         List<TimelineEntry> timeline = new ArrayList<>();
         timeline.add(entry("Detection", "User manually triggered an SOS."));
@@ -49,7 +51,8 @@ public class EmergencyService {
             timeline.add(entry("User Response", request.getMessage()));
         }
 
-        return createAndNotify(userId, TriggerType.MANUAL_SOS, RiskLevel.CRITICAL, location.getId(), timeline, false);
+        return createAndNotify(userId, TriggerType.MANUAL_SOS, RiskLevel.CRITICAL,
+                location != null ? location.getId() : null, timeline, false);
     }
 
     public EmergencyResponse triggerFromAlert(SafetyAlert alert) {
@@ -81,7 +84,10 @@ public class EmergencyService {
     private EmergencyResponse createAndNotify(String userId, TriggerType triggerType, RiskLevel riskLevel,
                                                String locationId, List<TimelineEntry> timeline, boolean simulated) {
         List<TrustedContact> contacts = trustedContactRepository.findByUserIdOrderByPriorityAsc(userId);
-        List<String> contactIds = contacts.stream().map(TrustedContact::getId).toList();
+        List<String> contactIds = contacts.stream()
+                .filter(TrustedContact::isNotificationEnabled)
+                .map(TrustedContact::getId)
+                .toList();
 
         EmergencyEvent event = EmergencyEvent.builder()
                 .userId(userId)
@@ -98,10 +104,13 @@ public class EmergencyService {
 
         notificationService.create(userId, event.getId(), NotificationType.EMERGENCY,
                 "Emergency alert triggered", "An emergency event has been created and your trusted contacts are being notified.");
-        notificationService.notifyContacts(contacts, "Emergency alert",
-                "Your contact may need help. Trigger: " + triggerType + ", risk level: " + riskLevel);
+        notificationService.notifyContacts(contacts, "GuardianAI emergency alert",
+                "Your trusted contact may need help. Trigger: " + triggerType + ", risk level: " + riskLevel
+                        + ". Please contact them and local emergency services if needed.", simulated);
 
-        event.getTimeline().add(entry("Contact Notification", "Notified " + contacts.size() + " trusted contact(s)."));
+        event.getTimeline().add(entry("Contact Notification", simulated
+                ? "Demo notification recorded; no real messages were sent."
+                : "Sent SMS notification to " + contactIds.size() + " enabled trusted contact(s)."));
         event = emergencyEventRepository.save(event);
 
         return toResponse(event);

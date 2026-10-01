@@ -36,7 +36,7 @@ export function SOSButton({
         open={open}
         onOpenChange={setOpen}
         title="Trigger emergency SOS?"
-        description="This creates an emergency event, captures your latest location and notifies your trusted contacts in-app. Real SMS and emergency calls are simulated in this demo."
+         description="This creates an emergency event, captures your latest location when available and sends SMS alerts to enabled trusted contacts when the live backend is configured. Demo mode stays simulated."
         confirmLabel="Trigger SOS"
         destructive
         onConfirm={async () => {
