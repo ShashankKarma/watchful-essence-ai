@@ -165,14 +165,15 @@ export const sosService = {
       // The backend can still create the emergency event when location permission is denied.
     }
 
-    return emergencyService.trigger({
+    const input: TriggerEmergencyInput = {
       triggerType: "MANUAL_SOS",
       riskLevel: "CRITICAL",
       simulated,
-      latitude,
-      longitude,
       detectionDetail: "Manual SOS button pressed",
       responseDetail: "User requested help",
-    });
+    };
+    if (latitude !== undefined) input.latitude = latitude;
+    if (longitude !== undefined) input.longitude = longitude;
+    return emergencyService.trigger(input);
   },
 };
