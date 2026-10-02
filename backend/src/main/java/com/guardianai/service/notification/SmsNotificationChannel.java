@@ -17,6 +17,9 @@ public class SmsNotificationChannel implements NotificationChannel {
     private final String gatewayUrl;
     private final String lovableApiKey;
     private final String gatewayApiKey;
+    private final String directToken;
+    private final String directUrl;
+    private final String defaultCountryCode;
     private final String sender;
 
     public SmsNotificationChannel(
@@ -24,11 +27,17 @@ public class SmsNotificationChannel implements NotificationChannel {
             @Value("${messaging.gateway-url:https://connector-gateway.lovable.dev/gatewayapi}") String gatewayUrl,
             @Value("${LOVABLE_API_KEY:}") String lovableApiKey,
             @Value("${GATEWAYAPI_API_KEY:}") String gatewayApiKey,
+            @Value("${GATEWAYAPI_TOKEN:}") String directToken,
+            @Value("${messaging.direct-url:https://messaging.gatewayapi.com}") String directUrl,
+            @Value("${messaging.default-country-code:91}") String defaultCountryCode,
             @Value("${messaging.sms-sender:GuardianAI}") String sender) {
         this.webClientBuilder = webClientBuilder;
         this.gatewayUrl = gatewayUrl;
         this.lovableApiKey = lovableApiKey;
         this.gatewayApiKey = gatewayApiKey;
+        this.directToken = directToken;
+        this.directUrl = directUrl;
+        this.defaultCountryCode = defaultCountryCode;
         this.sender = sender;
     }
 
@@ -49,26 +58,37 @@ public class SmsNotificationChannel implements NotificationChannel {
             log.warn("SMS skipped for trusted contact {} because no phone number is configured", contact.getName());
             return;
         }
-        if (lovableApiKey.isBlank() || gatewayApiKey.isBlank()) {
+        boolean direct = !directToken.isBlank();
+        boolean viaGateway = !lovableApiKey.isBlank() && !gatewayApiKey.isBlank();
+        if (!direct && !viaGateway) {
             log.warn("SMS simulated for {} because messaging credentials are not configured", contact.getPhone());
             return;
         }
 
         try {
-            webClientBuilder.build()
+            WebClient.RequestBodySpec request = webClientBuilder.build()
                     .post()
-                    .uri(gatewayUrl + "/mobile/single")
-                    .header("Authorization", "Bearer " + lovableApiKey)
-                    .header("X-Connection-Api-Key", gatewayApiKey)
+                    .uri((direct ? directUrl : gatewayUrl) + "/mobile/single");
+            if (direct) {
+                request = request.header("Authorization", "Token " + directToken);
+            } else {
+                request = request.header("Authorization", "Bearer " + lovableApiKey)
+                        .header("X-Connection-Api-Key", gatewayApiKey);
+            }
+            String response = request
                     .bodyValue(Map.of(
                             "sender", sender,
                             "recipient", normalizeRecipient(contact.getPhone()),
                             "message", subject + ": " + message
                     ))
                     .retrieve()
-                    .toBodilessEntity()
+                    .bodyToMono(String.class)
                     .block();
-            log.info("SMS sent to trusted contact {} ({})", contact.getName(), contact.getPhone());
+            log.info("SMS sent to trusted contact {} ({}): {}", contact.getName(), contact.getPhone(), response);
+        } catch (org.springframework.web.reactive.function.client.WebClientResponseException exception) {
+            log.error("SMS delivery failed for trusted contact {} ({}) [{}]: {}",
+                    contact.getName(), contact.getPhone(), exception.getStatusCode(),
+                    exception.getResponseBodyAsString());
         } catch (RuntimeException exception) {
             log.error("SMS delivery failed for trusted contact {} ({}): {}",
                     contact.getName(), contact.getPhone(), exception.getMessage());
@@ -79,6 +99,12 @@ public class SmsNotificationChannel implements NotificationChannel {
         String digits = phone.replaceAll("[^0-9]", "");
         if (digits.isBlank()) {
             throw new IllegalArgumentException("Trusted contact phone number has no digits");
+        }
+        if (digits.startsWith("0")) {
+            digits = digits.replaceFirst("^0+", "");
+        }
+        if (digits.length() == 10 && !defaultCountryCode.isBlank()) {
+            digits = defaultCountryCode + digits;
         }
         return Long.parseLong(digits);
     }
