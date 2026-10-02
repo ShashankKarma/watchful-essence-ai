@@ -28,6 +28,8 @@ gemini:
 messaging:
   gateway-url: ${MESSAGING_GATEWAY_URL:https://connector-gateway.lovable.dev/gatewayapi}
   sms-sender: ${SMS_SENDER:GuardianAI}
+  direct-url: ${GATEWAYAPI_URL:https://messaging.gatewayapi.com}
+  default-country-code: ${SMS_DEFAULT_COUNTRY_CODE:91}
 
 springdoc:
   swagger-ui:
