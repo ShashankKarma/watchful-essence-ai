@@ -14,9 +14,9 @@ services:
         generateValue: true
       - key: CORS_ALLOWED_ORIGINS
         value: https://watchful-essence-ai.lovable.app,https://id-preview--13cc838c-640e-4c9a-8c40-0315d9c3b362.lovable.app
-      - key: LOVABLE_API_KEY
+      - key: GATEWAYAPI_TOKEN
         sync: false
-      - key: GATEWAYAPI_API_KEY
-        sync: false
+      - key: SMS_DEFAULT_COUNTRY_CODE
+        value: "91"
       - key: SMS_SENDER
         value: GuardianAI
