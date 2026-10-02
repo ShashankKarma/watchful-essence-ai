@@ -15,6 +15,7 @@ import { monitoringService, type BehaviourDataRequest } from "@/services/monitor
 import { locationService } from "@/services/locationService";
 import { userService } from "@/services/userService";
 import { currentUserId } from "@/services/session";
+import { API_BASE_URL } from "@/services/apiClient";
 import type {
   AiAnalysisResult,
   EmergencyEvent,
@@ -180,7 +181,9 @@ export function GuardianProvider({ children }: { children: ReactNode }) {
         toast.error(simulated ? "[DEMO] SOS triggered" : "SOS triggered", {
           description: simulated || event.simulated
             ? "Demo notification recorded; no real message was sent."
-            : "SMS alerts sent to enabled trusted contacts.",
+            : API_BASE_URL
+              ? "SOS sent to the server; SMS alerts go to enabled trusted contacts."
+              : "Emergency saved in the app only. No SMS was sent — the live server is not connected yet.",
         });
         bump();
       },
