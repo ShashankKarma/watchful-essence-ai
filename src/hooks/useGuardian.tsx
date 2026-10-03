@@ -176,13 +176,22 @@ export function GuardianProvider({ children }: { children: ReactNode }) {
         bump();
       },
       triggerSos: async (simulated = false) => {
-        const event = await sosService.trigger(simulated);
+        let event;
+        try {
+          event = await sosService.trigger(simulated);
+        } catch {
+          toast.error("SOS could not reach the live server", {
+            description: "No emergency or text message was recorded. Check the server connection and try again.",
+          });
+          return;
+        }
         setActiveEmergency(event);
+        const smsStatus = event.timeline.find((entry) => entry.stage === "Contact Notification")?.detail;
         toast.error(simulated ? "[DEMO] SOS triggered" : "SOS triggered", {
           description: simulated || event.simulated
             ? "Demo notification recorded; no real message was sent."
             : API_BASE_URL
-              ? "SOS sent to the server; SMS alerts go to enabled trusted contacts."
+              ? smsStatus ?? "Emergency recorded; SMS request status is unavailable. Check emergency history."
               : "Emergency saved in the app only. No SMS was sent — the live server is not connected yet.",
         });
         bump();

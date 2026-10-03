@@ -12,6 +12,7 @@ import com.guardianai.service.notification.SmsNotificationChannel;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -38,21 +39,51 @@ public class NotificationService {
         return notification;
     }
 
-    public void notifyContacts(List<TrustedContact> contacts, String subject, String message) {
-        notifyContacts(contacts, subject, message, false);
+    public ContactNotificationSummary notifyContacts(List<TrustedContact> contacts, String subject, String message) {
+        return notifyContacts(contacts, subject, message, false);
     }
 
-    public void notifyContacts(List<TrustedContact> contacts, String subject, String message, boolean simulated) {
+    public ContactNotificationSummary notifyContacts(List<TrustedContact> contacts, String subject, String message, boolean simulated) {
+        List<TrustedContact> enabledContacts = contacts.stream()
+                .filter(TrustedContact::isNotificationEnabled)
+                .toList();
         if (simulated) {
-            return;
+            return new ContactNotificationSummary(0, 0, 0, enabledContacts.size(),
+                    "Demo mode: no real SMS was sent.", List.of());
         }
-        for (TrustedContact contact : contacts) {
-            if (!contact.isNotificationEnabled()) {
-                continue;
+
+        int accepted = 0;
+        int failed = 0;
+        int notConfigured = 0;
+        int skipped = 0;
+        List<String> outcomes = new ArrayList<>();
+        for (TrustedContact contact : enabledContacts) {
+            SmsNotificationChannel.DeliveryResult result =
+                    smsNotificationChannel.sendToContact(contact, subject, message);
+            outcomes.add(result.detail());
+            switch (result.status()) {
+                case "ACCEPTED" -> accepted++;
+                case "FAILED" -> failed++;
+                case "NOT_CONFIGURED" -> notConfigured++;
+                default -> skipped++;
             }
-            smsNotificationChannel.notifyContact(contact, subject, message);
         }
+
+        String detail;
+        if (enabledContacts.isEmpty()) {
+            detail = "No trusted contacts have SMS alerts enabled.";
+        } else if (accepted == enabledContacts.size()) {
+            detail = "GatewayAPI accepted SMS requests for " + accepted + " of " + enabledContacts.size()
+                    + " enabled contact(s); carrier delivery is not confirmed yet.";
+        } else {
+            detail = "SMS requests accepted for " + accepted + " of " + enabledContacts.size()
+                    + " enabled contact(s); some could not be sent. Check the contact phone, Java server credentials, and GatewayAPI delivery logs.";
+        }
+        return new ContactNotificationSummary(accepted, failed, notConfigured, skipped, detail, outcomes);
     }
+
+    public record ContactNotificationSummary(int accepted, int failed, int notConfigured, int skipped,
+                                              String detail, List<String> outcomes) { }
 
     public List<NotificationResponse> list(String userId) {
         return notificationRepository.findByUserIdOrderByCreatedAtDesc(userId).stream()
