@@ -8,5 +8,7 @@ public class SosRequest {
 
     private Double longitude;
 
+    private boolean simulated;
+
     private String message;
 }

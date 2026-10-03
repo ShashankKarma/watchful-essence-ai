@@ -79,10 +79,12 @@ export const emergencyService = {
     const response = await apiClient.post("/api/sos", {
         latitude: input.latitude,
         longitude: input.longitude,
+        simulated: input.simulated ?? false,
         message: input.responseDetail,
     });
-    const body = response.data as { data?: EmergencyEvent } | EmergencyEvent;
-    return "data" in body ? body.data ?? (body as EmergencyEvent) : body;
+    const body = response.data as { data?: EmergencyEvent };
+    if (body.data) return body.data;
+    return response.data as EmergencyEvent;
   },
 
   history(): Promise<EmergencyEvent[]> {

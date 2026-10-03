@@ -52,7 +52,7 @@ public class EmergencyService {
         }
 
         return createAndNotify(userId, TriggerType.MANUAL_SOS, RiskLevel.CRITICAL,
-                location != null ? location.getId() : null, timeline, false);
+                location != null ? location.getId() : null, timeline, request.isSimulated());
     }
 
     public EmergencyResponse triggerFromAlert(SafetyAlert alert) {
