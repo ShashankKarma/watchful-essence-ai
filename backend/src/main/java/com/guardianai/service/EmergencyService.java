@@ -109,7 +109,9 @@ public class EmergencyService {
                         + ". Please contact them and local emergency services if needed.", simulated);
 
         event.getTimeline().add(entry("Contact Notification", notificationSummary.detail()));
-        notificationSummary.outcomes().forEach(outcome -> event.getTimeline().add(entry("SMS Result", outcome)));
+        for (String outcome : notificationSummary.outcomes()) {
+            event.getTimeline().add(entry("SMS Result", outcome));
+        }
         event = emergencyEventRepository.save(event);
 
         return toResponse(event);
