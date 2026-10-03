@@ -46,6 +46,7 @@ com/guardianai/controller/BehaviourController.class
 com/guardianai/dto/NotificationResponse.class
 com/guardianai/repository/NotificationRepository.class
 com/guardianai/model/SafetyAlert.class
+com/guardianai/service/NotificationService$ContactNotificationSummary.class
 com/guardianai/model/MonitoringSession$MonitoringSessionBuilder.class
 com/guardianai/model/SafetyTip.class
 com/guardianai/repository/LocationDataRepository.class
@@ -133,6 +134,7 @@ com/guardianai/model/RiskAssessment$RiskAssessmentBuilder.class
 com/guardianai/dto/LoginResponse$LoginResponseBuilder.class
 com/guardianai/security/CustomUserDetailsService.class
 com/guardianai/model/EmergencyStatus.class
+com/guardianai/service/notification/SmsNotificationChannel$DeliveryResult.class
 com/guardianai/ai/DigitalTwinService.class
 com/guardianai/controller/NotificationController.class
 com/guardianai/dto/TrustedContactRequest.class

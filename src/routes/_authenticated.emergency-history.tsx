@@ -84,7 +84,8 @@ function EmergencyHistoryPage() {
               <>
                 <p className="font-display text-base font-semibold">Event details</p>
                 <p className="mt-1 text-xs text-muted-foreground">
-                  {selected.notifiedContactIds.length} contact(s) notified (simulated)
+                  {selected.timeline.find((entry) => entry.stage === "Contact Notification")?.detail
+                    ?? `${selected.notifiedContactIds.length} contact(s) were included in the notification attempt.`}
                 </p>
                 <div className="mt-4">
                   <EmergencyTimeline entries={selected.timeline} />

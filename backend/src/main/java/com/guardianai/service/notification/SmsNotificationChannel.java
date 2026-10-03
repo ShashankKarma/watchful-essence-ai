@@ -54,15 +54,20 @@ public class SmsNotificationChannel implements NotificationChannel {
 
     @Override
     public void notifyContact(TrustedContact contact, String subject, String message) {
+        sendToContact(contact, subject, message);
+    }
+
+    public DeliveryResult sendToContact(TrustedContact contact, String subject, String message) {
         if (contact.getPhone() == null || contact.getPhone().isBlank()) {
             log.warn("SMS skipped for trusted contact {} because no phone number is configured", contact.getName());
-            return;
+            return new DeliveryResult("SKIPPED", "SMS not sent to " + contact.getName() + ": no phone number is saved.");
         }
         boolean direct = !directToken.isBlank();
         boolean viaGateway = !lovableApiKey.isBlank() && !gatewayApiKey.isBlank();
         if (!direct && !viaGateway) {
-            log.warn("SMS simulated for {} because messaging credentials are not configured", contact.getPhone());
-            return;
+            log.warn("SMS not sent to trusted contact {} because messaging credentials are not configured", contact.getName());
+            return new DeliveryResult("NOT_CONFIGURED", "SMS not sent to " + contact.getName()
+                    + ": GatewayAPI credentials are not configured on the Java server.");
         }
 
         try {
@@ -84,16 +89,23 @@ public class SmsNotificationChannel implements NotificationChannel {
                     .retrieve()
                     .bodyToMono(String.class)
                     .block();
-            log.info("SMS sent to trusted contact {} ({}): {}", contact.getName(), contact.getPhone(), response);
+            log.info("GatewayAPI accepted SMS request for trusted contact {}", contact.getName());
+            return new DeliveryResult("ACCEPTED", "GatewayAPI accepted the SMS request for " + contact.getName()
+                    + "; carrier delivery is not confirmed yet.");
         } catch (org.springframework.web.reactive.function.client.WebClientResponseException exception) {
-            log.error("SMS delivery failed for trusted contact {} ({}) [{}]: {}",
-                    contact.getName(), contact.getPhone(), exception.getStatusCode(),
+            log.error("SMS request failed for trusted contact {} [{}]: {}",
+                    contact.getName(), exception.getStatusCode(),
                     exception.getResponseBodyAsString());
+            return new DeliveryResult("FAILED", "SMS request failed for " + contact.getName()
+                    + " (provider HTTP " + exception.getStatusCode().value() + "). Check the Java server log for the provider reason.");
         } catch (RuntimeException exception) {
-            log.error("SMS delivery failed for trusted contact {} ({}): {}",
-                    contact.getName(), contact.getPhone(), exception.getMessage());
+            log.error("SMS request failed for trusted contact {}: {}", contact.getName(), exception.getMessage());
+            return new DeliveryResult("FAILED", "SMS request failed for " + contact.getName()
+                    + ". Check the Java server log for details.");
         }
     }
+
+    public record DeliveryResult(String status, String detail) { }
 
     private long normalizeRecipient(String phone) {
         String digits = phone.replaceAll("[^0-9]", "");

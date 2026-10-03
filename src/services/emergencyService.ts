@@ -1,4 +1,4 @@
-import { apiClient, call } from "./apiClient";
+import { apiClient, call, hasRemote } from "./apiClient";
 import { db, save, uid } from "@/lib/demoStore";
 import { currentUserId } from "./session";
 import { locationService } from "./locationService";
@@ -74,15 +74,17 @@ function localTrigger(input: TriggerEmergencyInput): EmergencyEvent {
 }
 
 export const emergencyService = {
-  trigger(input: TriggerEmergencyInput): Promise<EmergencyEvent> {
-    return call(
-      () => apiClient.post("/api/sos", {
+  async trigger(input: TriggerEmergencyInput): Promise<EmergencyEvent> {
+    if (!hasRemote) return localTrigger(input);
+    const response = await apiClient.post("/api/sos", {
         latitude: input.latitude,
         longitude: input.longitude,
+        simulated: input.simulated ?? false,
         message: input.responseDetail,
-      }),
-      () => localTrigger(input),
-    );
+    });
+    const body = response.data as { data?: EmergencyEvent };
+    if (body.data) return body.data;
+    return response.data as EmergencyEvent;
   },
 
   history(): Promise<EmergencyEvent[]> {

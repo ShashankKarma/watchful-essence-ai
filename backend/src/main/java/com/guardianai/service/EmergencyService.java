@@ -52,7 +52,7 @@ public class EmergencyService {
         }
 
         return createAndNotify(userId, TriggerType.MANUAL_SOS, RiskLevel.CRITICAL,
-                location != null ? location.getId() : null, timeline, false);
+                location != null ? location.getId() : null, timeline, request.isSimulated());
     }
 
     public EmergencyResponse triggerFromAlert(SafetyAlert alert) {
@@ -104,13 +104,14 @@ public class EmergencyService {
 
         notificationService.create(userId, event.getId(), NotificationType.EMERGENCY,
                 "Emergency alert triggered", "An emergency event has been created and your trusted contacts are being notified.");
-        notificationService.notifyContacts(contacts, "GuardianAI emergency alert",
+        NotificationService.ContactNotificationSummary notificationSummary = notificationService.notifyContacts(contacts, "GuardianAI emergency alert",
                 "Your trusted contact may need help. Trigger: " + triggerType + ", risk level: " + riskLevel
                         + ". Please contact them and local emergency services if needed.", simulated);
 
-        event.getTimeline().add(entry("Contact Notification", simulated
-                ? "Demo notification recorded; no real messages were sent."
-                : "Sent SMS notification to " + contactIds.size() + " enabled trusted contact(s)."));
+        event.getTimeline().add(entry("Contact Notification", notificationSummary.detail()));
+        for (String outcome : notificationSummary.outcomes()) {
+            event.getTimeline().add(entry("SMS Result", outcome));
+        }
         event = emergencyEventRepository.save(event);
 
         return toResponse(event);
