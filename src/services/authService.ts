@@ -22,6 +22,13 @@ function sanitize(user: User): User {
 
 export const authService = {
   async register(payload: RegisterRequest): Promise<LoginResponse> {
+    if (hasRemote) {
+      const res = await apiClient.post("/api/auth/register", payload);
+      const body = res.data as { data?: LoginResponse } | LoginResponse;
+      const result = (body as { data?: LoginResponse }).data ?? (body as LoginResponse);
+      setToken(result.token);
+      return result;
+    }
     return call(
       () => apiClient.post("/api/auth/register", payload),
       () => {
