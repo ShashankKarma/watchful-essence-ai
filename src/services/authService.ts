@@ -1,4 +1,4 @@
-import { apiClient, call, setToken, getToken } from "./apiClient";
+import { apiClient, call, hasRemote, setToken, getToken } from "./apiClient";
 import { db, save, uid } from "@/lib/demoStore";
 import type { User } from "@/lib/types";
 
