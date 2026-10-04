@@ -1,4 +1,4 @@
-import { apiClient, call, setToken, getToken } from "./apiClient";
+import { apiClient, call, hasRemote, setToken, getToken } from "./apiClient";
 import { db, save, uid } from "@/lib/demoStore";
 import type { User } from "@/lib/types";
 
@@ -22,6 +22,13 @@ function sanitize(user: User): User {
 
 export const authService = {
   async register(payload: RegisterRequest): Promise<LoginResponse> {
+    if (hasRemote) {
+      const res = await apiClient.post("/api/auth/register", payload);
+      const body = res.data as { data?: LoginResponse } | LoginResponse;
+      const result = (body as { data?: LoginResponse }).data ?? (body as LoginResponse);
+      setToken(result.token);
+      return result;
+    }
     return call(
       () => apiClient.post("/api/auth/register", payload),
       () => {
@@ -76,6 +83,13 @@ export const authService = {
   },
 
   async login(email: string, password: string): Promise<LoginResponse> {
+    if (hasRemote) {
+      const res = await apiClient.post("/api/auth/login", { email, password });
+      const body = res.data as { data?: LoginResponse } | LoginResponse;
+      const result = (body as { data?: LoginResponse }).data ?? (body as LoginResponse);
+      setToken(result.token);
+      return result;
+    }
     const result = await call<LoginResponse>(
       () => apiClient.post("/api/auth/login", { email, password }),
       () => {
@@ -95,6 +109,16 @@ export const authService = {
   },
 
   async me(): Promise<User | null> {
+    if (hasRemote) {
+      if (!getToken()) return null;
+      try {
+        const res = await apiClient.get("/api/auth/me");
+        const body = res.data as { data?: User } | User;
+        return (body as { data?: User }).data ?? (body as User);
+      } catch {
+        return null;
+      }
+    }
     return call(
       () => apiClient.get("/api/auth/me"),
       () => {
