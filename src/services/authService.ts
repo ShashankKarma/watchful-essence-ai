@@ -109,6 +109,16 @@ export const authService = {
   },
 
   async me(): Promise<User | null> {
+    if (hasRemote) {
+      if (!getToken()) return null;
+      try {
+        const res = await apiClient.get("/api/auth/me");
+        const body = res.data as { data?: User } | User;
+        return (body as { data?: User }).data ?? (body as User);
+      } catch {
+        return null;
+      }
+    }
     return call(
       () => apiClient.get("/api/auth/me"),
       () => {
