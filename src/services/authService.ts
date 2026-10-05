@@ -1,3 +1,4 @@
+import { authPost } from "./authRequest";
 import { apiClient, call, hasRemote, setToken, getToken } from "./apiClient";
 import { db, save, uid } from "@/lib/demoStore";
 import type { User } from "@/lib/types";
@@ -23,9 +24,7 @@ function sanitize(user: User): User {
 export const authService = {
   async register(payload: RegisterRequest): Promise<LoginResponse> {
     if (hasRemote) {
-      const res = await apiClient.post("/api/auth/register", payload);
-      const body = res.data as { data?: LoginResponse } | LoginResponse;
-      const result = (body as { data?: LoginResponse }).data ?? (body as LoginResponse);
+      const result = await authPost<LoginResponse>("/api/auth/register", payload);
       setToken(result.token);
       return result;
     }
@@ -84,9 +83,7 @@ export const authService = {
 
   async login(email: string, password: string): Promise<LoginResponse> {
     if (hasRemote) {
-      const res = await apiClient.post("/api/auth/login", { email, password });
-      const body = res.data as { data?: LoginResponse } | LoginResponse;
-      const result = (body as { data?: LoginResponse }).data ?? (body as LoginResponse);
+      const result = await authPost<LoginResponse>("/api/auth/login", { email, password });
       setToken(result.token);
       return result;
     }
