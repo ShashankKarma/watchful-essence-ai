@@ -64,6 +64,7 @@ public CorsConfigurationSource corsConfigurationSource() {
     configuration.setAllowedOriginPatterns(List.of(
             "https://*.lovable.app",
             "https://*.lovable.dev",
+            "https://*.lovableproject.com",
             "http://localhost:*"
     ));
 
