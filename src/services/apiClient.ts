@@ -7,6 +7,13 @@ export const hasRemote = Boolean(API_BASE_URL);
 
 const TOKEN_KEY = "guardianai.token";
 
+// A real backend is configured: drop any leftover demo-mode token so only
+// genuine JWTs issued by the Spring Boot server are ever sent.
+if (hasRemote && typeof window !== "undefined") {
+  const stored = window.localStorage.getItem(TOKEN_KEY);
+  if (stored?.startsWith("local.")) window.localStorage.removeItem(TOKEN_KEY);
+}
+
 export function getToken(): string | null {
   if (typeof window === "undefined") return null;
   return window.localStorage.getItem(TOKEN_KEY);
