@@ -105,14 +105,16 @@ export const emergencyService = {
   },
 
   active(): Promise<EmergencyEvent | null> {
-    return call(
+    return call<EmergencyEvent[]>(
       () => apiClient.get("/api/emergency/history"),
       () =>
-        db().emergencies.find(
+        db().emergencies.filter(
           (e) =>
             e.userId === currentUserId() &&
             (e.status === "ACTIVE" || e.status === "AUTO_ESCALATED"),
-        ) ?? null,
+        ),
+    ).then((events) =>
+      events.find((event) => event.status === "ACTIVE" || event.status === "AUTO_ESCALATED") ?? null,
     );
   },
 

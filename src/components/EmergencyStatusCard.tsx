@@ -20,7 +20,8 @@ export function EmergencyStatusCard({
         {event.simulated ? <DemoBadge /> : null}
       </div>
       <p className="mt-2 text-sm text-foreground/80">
-        Trigger: {event.triggerType.replace(/_/g, " ")} · {new Date(event.timestamp).toLocaleString()}
+        Trigger: {event.triggerType?.replace(/_/g, " ") ?? "Emergency alert"} ·{" "}
+        {new Date(event.timestamp).toLocaleString()}
       </p>
       <div className="mt-3 grid gap-2 text-sm text-foreground/80 sm:grid-cols-2">
         <p className="flex items-center gap-2">
@@ -31,7 +32,7 @@ export function EmergencyStatusCard({
         </p>
         <p className="flex items-center gap-2">
           <Users className="h-4 w-4 text-muted-foreground" />
-          {event.notifiedContactIds.length} trusted contact(s) notified (simulated)
+          {event.notifiedContactIds?.length ?? 0} trusted contact(s) notified (simulated)
         </p>
       </div>
       <div className="mt-4 flex gap-3">
