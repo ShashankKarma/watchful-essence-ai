@@ -40,7 +40,7 @@ export function AlertModal({
           </div>
 
           <ul className="mt-4 space-y-1 text-left text-sm text-foreground/80">
-            {alert.reasons.map((r) => (
+            {(alert.reasons ?? []).map((r) => (
               <li key={r} className="flex gap-2">
                 <span className="text-danger">•</span>
                 {r}
