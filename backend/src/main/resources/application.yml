@@ -31,6 +31,10 @@ messaging:
   direct-url: ${GATEWAYAPI_URL:https://messaging.gatewayapi.com}
   default-country-code: ${SMS_DEFAULT_COUNTRY_CODE:91}
 
+resend:
+  api-key: ${RESEND_API_KEY:}
+  from-email: ${RESEND_FROM_EMAIL:}
+
 springdoc:
   swagger-ui:
     path: /swagger-ui.html

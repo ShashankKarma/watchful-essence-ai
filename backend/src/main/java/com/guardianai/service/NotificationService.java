@@ -7,6 +7,7 @@ import com.guardianai.model.NotificationStatus;
 import com.guardianai.model.NotificationType;
 import com.guardianai.model.TrustedContact;
 import com.guardianai.repository.NotificationRepository;
+import com.guardianai.service.notification.EmailNotificationChannel;
 import com.guardianai.service.notification.InAppNotificationChannel;
 import com.guardianai.service.notification.SmsNotificationChannel;
 import lombok.RequiredArgsConstructor;
@@ -23,6 +24,7 @@ public class NotificationService {
     private final NotificationRepository notificationRepository;
     private final InAppNotificationChannel inAppNotificationChannel;
     private final SmsNotificationChannel smsNotificationChannel;
+    private final EmailNotificationChannel emailNotificationChannel;
 
     public Notification create(String userId, String emergencyEventId, NotificationType type, String title, String message) {
         Notification notification = Notification.builder()
@@ -44,12 +46,18 @@ public class NotificationService {
     }
 
     public ContactNotificationSummary notifyContacts(List<TrustedContact> contacts, String subject, String message, boolean simulated) {
+        return notifyContacts(contacts, subject, message, simulated, "UNKNOWN", "UNKNOWN", message, null, null);
+    }
+
+    public ContactNotificationSummary notifyContacts(List<TrustedContact> contacts, String subject, String message,
+                                                       boolean simulated, String triggerType, String riskLevel,
+                                                       String emergencyMessage, Double latitude, Double longitude) {
         List<TrustedContact> enabledContacts = contacts.stream()
                 .filter(TrustedContact::isNotificationEnabled)
                 .toList();
         if (simulated) {
             return new ContactNotificationSummary(0, 0, 0, enabledContacts.size(),
-                    "Demo mode: no real SMS was sent.", List.of());
+                    "Demo mode: no real SMS or email was sent.", List.of(), List.of());
         }
 
         int accepted = 0;
@@ -57,6 +65,7 @@ public class NotificationService {
         int notConfigured = 0;
         int skipped = 0;
         List<String> outcomes = new ArrayList<>();
+        List<String> emailOutcomes = new ArrayList<>();
         for (TrustedContact contact : enabledContacts) {
             SmsNotificationChannel.DeliveryResult result =
                     smsNotificationChannel.sendToContact(contact, subject, message);
@@ -69,21 +78,40 @@ public class NotificationService {
             }
         }
 
-        String detail;
+        int emailAccepted = 0;
+        int emailFailed = 0;
+        int emailNotConfigured = 0;
+        int emailSkipped = 0;
+        for (TrustedContact contact : enabledContacts) {
+            EmailNotificationChannel.DeliveryResult result = emailNotificationChannel.sendEmergencyAlert(
+                    contact, triggerType, riskLevel, emergencyMessage, latitude, longitude);
+            emailOutcomes.add(result.detail());
+            switch (result.status()) {
+                case "ACCEPTED" -> emailAccepted++;
+                case "FAILED" -> emailFailed++;
+                case "NOT_CONFIGURED" -> emailNotConfigured++;
+                default -> emailSkipped++;
+            }
+        }
+
+        String smsDetail;
         if (enabledContacts.isEmpty()) {
-            detail = "No trusted contacts have SMS alerts enabled.";
+            smsDetail = "No trusted contacts have SMS alerts enabled.";
         } else if (accepted == enabledContacts.size()) {
-            detail = "GatewayAPI accepted SMS requests for " + accepted + " of " + enabledContacts.size()
+            smsDetail = "GatewayAPI accepted SMS requests for " + accepted + " of " + enabledContacts.size()
                     + " enabled contact(s); carrier delivery is not confirmed yet.";
         } else {
-            detail = "SMS requests accepted for " + accepted + " of " + enabledContacts.size()
+            smsDetail = "SMS requests accepted for " + accepted + " of " + enabledContacts.size()
                     + " enabled contact(s); some could not be sent. Check the contact phone, Java server credentials, and GatewayAPI delivery logs.";
         }
-        return new ContactNotificationSummary(accepted, failed, notConfigured, skipped, detail, outcomes);
+        String emailDetail = "Email requests accepted for " + emailAccepted + "; failed " + emailFailed
+                + "; not configured " + emailNotConfigured + "; skipped " + emailSkipped + ".";
+        return new ContactNotificationSummary(accepted, failed, notConfigured, skipped,
+                smsDetail + " " + emailDetail, outcomes, emailOutcomes);
     }
 
     public record ContactNotificationSummary(int accepted, int failed, int notConfigured, int skipped,
-                                              String detail, List<String> outcomes) { }
+                                              String detail, List<String> outcomes, List<String> emailOutcomes) { }
 
     public List<NotificationResponse> list(String userId) {
         return notificationRepository.findByUserIdOrderByCreatedAtDesc(userId).stream()
